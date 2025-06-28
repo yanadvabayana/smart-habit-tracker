@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "id": "1751089353259",
+      "name": "Яна",
+      "email": "chip@mail.ru",
+      "password": "Ad191213",
+      "joinDate": "2025-06-28T05:42:33.259Z"
+    }
+  ],
+  "habits": [
+    {
+      "id": "1751089391180",
+      "name": "Пить воду",
+      "category": "health",
+      "frequency": "daily",
+      "reminder": "",
+      "motivation": "просто нравится пить воду",
+      "completedDates": [],
+      "active": true,
+      "archived": false,
+      "createdAt": "2025-06-28T05:43:11.180Z",
+      "userId": "1751089353259"
+    }
+  ]
+}

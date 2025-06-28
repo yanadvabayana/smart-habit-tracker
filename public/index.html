@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHabit - Умный трекер привычек</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-tabs">
+            <div class="auth-tab active" data-tab="login">Вход</div>
+            <div class="auth-tab" data-tab="register">Регистрация</div>
+        </div>
+
+        <form id="login-form" class="auth-form">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" class="form-control" placeholder="Ваш email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Пароль</label>
+                <input type="password" id="login-password" class="form-control" placeholder="Ваш пароль" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        </form>
+
+        <form id="register-form" class="auth-form" style="display: none;">
+            <div class="form-group">
+                <label for="register-name">Имя</label>
+                <input type="text" id="register-name" class="form-control" placeholder="Ваше имя" required>
+            </div>
+            <div class="form-group">
+                <label for="register-email">Email</label>
+                <input type="email" id="register-email" class="form-control" placeholder="Ваш email" required>
+            </div>
+            <div class="form-group">
+                <label for="register-password">Пароль</label>
+                <input type="password" id="register-password" class="form-control" placeholder="Не менее 6 символов"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="register-confirm">Подтвердите пароль</label>
+                <input type="password" id="register-confirm" class="form-control" placeholder="Повторите пароль"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+        </form>
+    </div>
+
+
+    <div class="container" id="app-container" style="display: none;">
+        <header id="app-header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>SmartHabit</h1>
+            </div>
+            <div class="user-actions">
+                <div class="user-info">
+                    <span id="user-avatar" class="user-avatar"></span>
+                    <span id="user-name"></span>
+                </div>
+                <button id="logout-btn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </button>
+            </div>
+        </header>
+
+        <div class="stats-summary">
+            <div class="stat-card fade-in">
+                <div class="stat-icon icon-bg-primary">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-value" id="total-habits">0</div>
+                <div class="stat-label">Всего привычек</div>
+            </div>
+
+            <div class="stat-card fade-in" style="animation-delay: 0.1s">
+                <div class="stat-icon icon-bg-success">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-value" id="streak-count">0</div>
+                <div class="stat-label">Текущая серия</div>
+            </div>
+
+            <div class="stat-card fade-in" style="animation-delay: 0.2s">
+                <div class="stat-icon icon-bg-warning">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-value" id="completion-rate">0%</div>
+                <div class="stat-label">Общий прогресс</div>
+            </div>
+        </div>
+
+        <div class="app-content" id="app-content">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-filter"></i> Фильтр привычек
+                    </h3>
+                    <div class="filter-options">
+                        <div class="filter-option active" data-section="all">
+                            <i class="fas fa-list"></i>
+                            <span>Все привычки</span>
+                        </div>
+                        <div class="filter-option" data-section="active">
+                            <i class="fas fa-fire"></i>
+                            <span>Активные</span>
+                        </div>
+                        <div class="filter-option" data-section="completed">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Выполненные</span>
+                        </div>
+                        <div class="filter-option" data-section="archive">
+                            <i class="fas fa-archive"></i>
+                            <span>Архив</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-chart-line"></i> Статистика
+                    </h3>
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <span>Еженедельная цель</span>
+                            <span id="weekly-progress">0/5 дней</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="weekly-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="streak-container">
+                        <i class="fas fa-fire streak-icon"></i>
+                        <div>
+                            <span class="streak-count" id="current-streak">0</span>
+                            <span class="streak-label">дней подряд</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-medal"></i> Достижения
+                    </h3>
+                    <div id="achievements-container" class="achievement">
+                        <!-- Достижения будут добавляться сюда -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div id="habits-section">
+                    <div class="section-header">
+                        <h2>Мои привычки</h2>
+                        <button id="add-habit-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Добавить привычку
+                        </button>
+                    </div>
+
+                    <div id="habits-container" class="habits-grid">
+                        <!-- Привычки будут добавляться сюда -->
+                    </div>
+                </div>
+
+                <div id="add-habit-form" class="add-habit-form" style="display: none;">
+                    <div class="form-header">
+                        <h3 class="form-title">Добавить новую привычку</h3>
+                        <button id="cancel-add-btn" class="btn btn-outline">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="habit-name">Название привычки</label>
+                            <input type="text" id="habit-name" class="form-control"
+                                placeholder="Бегать по утрам, Читать книгу...">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="habit-category">Категория</label>
+                            <select id="habit-category" class="form-control">
+                                <option value="health">Здоровье</option>
+                                <option value="sport">Спорт</option>
+                                <option value="study">Обучение</option>
+                                <option value="work">Работа</option>
+                                <option value="personal">Личное развитие</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="habit-frequency">Частота</label>
+                            <select id="habit-frequency" class="form-control">
+                                <option value="daily">Ежедневно</option>
+                                <option value="weekly">3 раза в неделю</option>
+                                <option value="weekdays">По будням</option>
+                                <option value="custom">Особый график</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="habit-reminder">Напоминание</label>
+                            <input type="time" id="habit-reminder" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="habit-motivation">Мотивация (почему это важно?)</label>
+                        <textarea id="habit-motivation" class="form-control" rows="3"
+                            placeholder="Эта привычка поможет мне..."></textarea>
+                    </div>
+
+                    <div class="form-footer">
+                        <button id="save-habit-btn" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Сохранить привычку
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Аналитика и графики -->
+                <div class="analytics-container">
+                    <div class="section-header">
+                        <h2><i class="fas fa-chart-bar"></i> Аналитика привычек</h2>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-bar" id="progress-chart">
+                            <!-- График будет генерироваться динамически -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Экспорт данных -->
+                <div class="export-container">
+                    <div class="section-header">
+                        <h2><i class="fas fa-file-export"></i> Экспорт данных</h2>
+                    </div>
+                    <p>Вы можете экспортировать свои данные о привычках для анализа или резервного копирования.</p>
+                    <div class="export-options">
+                        <button id="export-csv" class="btn btn-outline">
+                            <i class="fas fa-file-csv"></i> Экспорт в CSV
+                        </button>
+                        <button id="export-pdf" class="btn btn-outline">
+                            <i class="fas fa-file-pdf"></i> Экспорт в PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Интеграция с календарем -->
+                <div class="calendar-integration">
+                    <div class="section-header">
+                        <h2><i class="fas fa-calendar-alt"></i> Интеграция с календарем</h2>
+                    </div>
+                    <p>Синхронизируйте ваши привычки с внешними календарями.</p>
+                    <div class="calendar-buttons">
+                        <button id="google-calendar" class="btn btn-outline">
+                            <i class="fab fa-google"></i> Google Calendar
+                        </button>
+                        <button id="apple-calendar" class="btn btn-outline">
+                            <i class="fab fa-apple"></i> Apple Calendar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <div class="notification-icon notification-success">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="notification-content">
+            <h4>Отличная работа!</h4>
+            <p>Привычка "Утренняя зарядка" отмечена на сегодня</p>
+        </div>
+    </div>
+    <div id="chat-bot-container" class="chat-bot-container">
+        <div class="chat-header">
+            <h3><i class="fas fa-robot"></i> Помощник по привычкам</h3>
+            <button id="close-chat" class="btn btn-icon"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Задайте вопрос о привычках...">
+            <button id="send-btn" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+    <button id="chat-toggle" class="chat-toggle">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    
+    <script src="script.js"></script>
+</body>
+
+</html>

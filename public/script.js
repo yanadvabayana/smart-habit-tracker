@@ -31,10 +31,6 @@ const closeChat = document.getElementById('close-chat');
 const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
-const exportCsv = document.getElementById('export-csv');
-const exportPdf = document.getElementById('export-pdf');
-const googleCalendar = document.getElementById('google-calendar');
-const appleCalendar = document.getElementById('apple-calendar');
 
 document.addEventListener('DOMContentLoaded', () => {
     // Проверяем, есть ли сохраненный пользователь
@@ -136,18 +132,7 @@ function setupEventListeners() {
         });
     });
 
-    // Экспорт данных
-    exportCsv.addEventListener('click', exportToCSV);
-    exportPdf.addEventListener('click', exportToPDF);
 
-    // Интеграция с календарем
-    googleCalendar.addEventListener('click', () => {
-        showNotification('Интеграция', 'Интеграция с Google Calendar успешно настроена');
-    });
-
-    appleCalendar.addEventListener('click', () => {
-        showNotification('Интеграция', 'Интеграция с Apple Calendar успешно настроена');
-    });
 }
 
 // Инициализация чата
@@ -208,14 +193,14 @@ async function loginUser(email, password) {
     if (response.ok) {
       currentUser = data.user;
       
-      // Сохраняем пользователя в localStorage
+
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
       
       await loadUserData();
       showApp();
       showNotification('Добро пожаловать!', `Рады снова видеть вас, ${currentUser.name}`);
     } else {
-      // Показываем сообщение об ошибке с сервера
+
       showNotification('Ошибка', data.error || 'Неверный email или пароль', 'error');
     }
   } catch (error) {
@@ -224,7 +209,7 @@ async function loginUser(email, password) {
   }
 }
 
-// Выход пользователя
+
 function logoutUser() {
     localStorage.removeItem('currentUser');
     currentUser = null;
@@ -232,7 +217,7 @@ function logoutUser() {
     showAuth();
 }
 
-// Загрузка привычек пользователя
+
 async function loadUserHabits() {
   if (!currentUser) return;
   
@@ -248,7 +233,7 @@ async function loadUserHabits() {
   }
 }
 
-// Загрузка достижений
+
 function loadAchievements() {
     if (!currentUser) return;
 
@@ -257,7 +242,7 @@ function loadAchievements() {
     renderAchievements();
 }
 
-// Загрузка напоминаний
+
 function loadReminders() {
     if (!currentUser) return;
 
@@ -265,12 +250,10 @@ function loadReminders() {
     reminders = userReminders ? JSON.parse(userReminders) : [];
 }
 
-// Сохранение привычек пользователя
 async function saveUserHabits() {
   if (!currentUser) return;
   
   try {
-    // Создаем копию привычек с добавлением userId
     const habitsWithUserId = habits.map(habit => ({
       ...habit,
       userId: currentUser.id
@@ -279,7 +262,7 @@ async function saveUserHabits() {
     await fetch(`${API_URL}/habits`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(habitsWithUserId) // Исправленная строка
+      body: JSON.stringify(habitsWithUserId)
     });
     
     updateStats();
@@ -291,25 +274,24 @@ async function saveUserHabits() {
   }
 }
 
-// Сохранение достижений
+
 function saveAchievements() {
     if (!currentUser) return;
     localStorage.setItem(`achievements_${currentUser.id}`, JSON.stringify(achievements));
     renderAchievements();
 }
 
-// Сохранение напоминаний
+
 function saveReminders() {
     if (!currentUser) return;
     localStorage.setItem(`reminders_${currentUser.id}`, JSON.stringify(reminders));
 }
 
-// Отображение экрана аутентификации
 function showAuth() {
     authScreen.style.display = 'block';
     appContainer.style.display = 'none';
 
-    // Сбросим вкладку на вход
+ 
     authTabs.forEach(t => t.classList.remove('active'));
     authTabs[0].classList.add('active');
     loginForm.style.display = 'block';
@@ -323,7 +305,7 @@ function showAuth() {
     document.getElementById('register-confirm').value = '';
 }
 
-// Отображение основного приложения
+
 function showApp() {
     if (!currentUser) return;
 
@@ -334,14 +316,12 @@ function showApp() {
     userName.textContent = currentUser.name;
     userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
 
-    // Показываем раздел с привычками
     habitsSection.style.display = 'block';
     addHabitForm.style.display = 'none';
 
     loadUserData();
 }
 
-// Добавление новой привычки
 function addNewHabit() {
     const name = document.getElementById('habit-name').value.trim();
     if (!name) {
@@ -365,7 +345,7 @@ function addNewHabit() {
     habits.push(newHabit);
     saveUserHabits();
 
-    // Добавляем напоминание
+
     if (newHabit.reminder) {
         reminders.push({
             habitId: newHabit.id,
@@ -388,7 +368,7 @@ function addNewHabit() {
     showNotification('Привычка добавлена!', `Вы добавили привычку "${name}"`);
 }
 
-// Отображение привычек
+
 function renderHabits() {
     if (!habitsContainer) return;
     habitsContainer.innerHTML = '';
@@ -413,7 +393,7 @@ function renderHabits() {
         return;
     }
 
-    // Фильтрация привычек по активному разделу
+
     let filteredHabits = habits;
 
     switch (activeSection) {
@@ -444,7 +424,7 @@ function renderHabits() {
         return;
     }
 
-    // Рендерим привычки
+
     filteredHabits.forEach((habit, index) => {
         const today = new Date().toISOString().split('T')[0];
         const habitCard = document.createElement('div');
@@ -473,7 +453,7 @@ function renderHabits() {
                 break;
         }
 
-        // Создаем календарь из 30 дней
+
         let calendarHTML = '';
         for (let i = 29; i >= 0; i--) {
             const date = new Date();
@@ -493,7 +473,7 @@ function renderHabits() {
                     `;
         }
 
-        // Рассчитываем статистику
+
         const completedCount = habit.completedDates.length;
         const completionRate = Math.round((completedCount / 30) * 100);
 
@@ -571,7 +551,7 @@ function renderHabits() {
     addHabitEventListeners();
 }
 
-// Добавление обработчиков событий для привычек
+
 function addHabitEventListeners() {
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -580,7 +560,7 @@ function addHabitEventListeners() {
         });
     });
 
-    // Кнопки архивации
+
     document.querySelectorAll('.archive-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = e.currentTarget.dataset.id;
@@ -588,7 +568,7 @@ function addHabitEventListeners() {
         });
     });
 
-    // Кнопки восстановления
+
     document.querySelectorAll('.restore-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = e.currentTarget.dataset.id;
@@ -596,7 +576,6 @@ function addHabitEventListeners() {
         });
     });
 
-    // Отметка выполнения
     document.querySelectorAll('.day').forEach(day => {
         day.addEventListener('click', (e) => {
             const date = e.target.dataset.date;
@@ -606,7 +585,7 @@ function addHabitEventListeners() {
     });
 }
 
-// Форматирование даты
+
 function formatDate(date) {
     return date.toLocaleDateString('ru-RU', {
         weekday: 'long',
@@ -615,7 +594,7 @@ function formatDate(date) {
     });
 }
 
-// Удаление привычки
+
 function deleteHabit(id) {
     if (confirm('Удалить эту привычку?')) {
         habits = habits.filter(habit => habit.id !== id);
@@ -625,7 +604,7 @@ function deleteHabit(id) {
     }
 }
 
-// Архивирование привычки
+
 function archiveHabit(id) {
     const habit = habits.find(h => h.id === id);
     if (habit) {
@@ -637,7 +616,7 @@ function archiveHabit(id) {
     }
 }
 
-// Восстановление привычки
+
 function restoreHabit(id) {
     const habit = habits.find(h => h.id === id);
     if (habit) {
@@ -649,7 +628,7 @@ function restoreHabit(id) {
     }
 }
 
-// Отметка/снятие отметки дня
+
 function toggleHabitDate(habitId, date) {
     const habit = habits.find(h => h.id === habitId);
     if (!habit || habit.archived) return;
@@ -667,7 +646,7 @@ function toggleHabitDate(habitId, date) {
     renderHabits();
 }
 
-// Обновление статистики
+
 function updateStats() {
     if (!currentUser) return;
 
@@ -686,7 +665,7 @@ function updateStats() {
 
     document.getElementById('completion-rate').textContent = `${completionRate}%`;
 
-    // Рассчет текущей серии
+
     let longestStreak = 0;
     habits.forEach(habit => {
         let currentStreak = 0;
@@ -739,14 +718,13 @@ function updateStats() {
 
 // Проверка достижений
 function checkAchievements() {
-    // Достижение: Первая привычка
     if (habits.length > 0 && !achievements.includes('first_habit')) {
         achievements.push('first_habit');
         showNotification('Достижение!', 'Первая привычка добавлена', 'success');
         saveAchievements();
     }
 
-    // Достижение: Неделя подряд
+
     let weekStreak = 0;
     const today = new Date();
     for (let i = 0; i < 7; i++) {
@@ -771,7 +749,6 @@ function checkAchievements() {
         saveAchievements();
     }
 
-    // Достижение: Месяц активности
     if (habits.length >= 5 && !achievements.includes('month_activity')) {
         achievements.push('month_activity');
         showNotification('Достижение!', '5 активных привычек в месяц', 'success');
@@ -845,31 +822,6 @@ function renderProgressChart() {
     });
 }
 
-// Экспорт в CSV
-function exportToCSV() {
-    let csvContent = "Название,Категория,Создано,Выполнено\n";
-
-    habits.forEach(habit => {
-        csvContent += `"${habit.name}",${habit.category},${formatDate(new Date(habit.createdat))},${habit.completedDates.length}\n`;
-    });
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `habits_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    showNotification('Экспорт', 'Данные успешно экспортированы в CSV');
-}
-
-// Экспорт в PDF
-function exportToPDF() {
-    showNotification('Экспорт', 'PDF экспорт в процессе разработки');
-}
 
 // Показать уведомление
 function showNotification(title, message, type = 'success') {
@@ -924,7 +876,7 @@ function addBotMessage(text) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Генерация ответов нейросети
+// Генерация ответов 
 function generateResponse(message) {
     const lowerMsg = message.toLowerCase();
 

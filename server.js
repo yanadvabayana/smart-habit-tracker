@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 // Обслуживание статических файлов из папки public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Инициализация базы данных
+
 function initDB() {
   if (!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify({
@@ -24,7 +24,7 @@ function initDB() {
   }
 }
 
-// API Endpoints
+
 app.post('/api/register', (req, res) => {
   const { name, email, password } = req.body;
   const db = JSON.parse(fs.readFileSync(DATA_FILE));
@@ -54,8 +54,8 @@ app.post('/api/login', (req, res) => {
   const { email, password } = req.body;
   const db = JSON.parse(fs.readFileSync(DATA_FILE));
   
-  console.log('Login attempt:', email); // Добавьте логирование
-  console.log('Users in DB:', db.users); // Отладка
+  console.log('Login attempt:', email); 
+  console.log('Users in DB:', db.users);
   
   const user = db.users.find(u => u.email === email && u.password === password);
   
@@ -64,7 +64,7 @@ app.post('/api/login', (req, res) => {
     return res.status(401).json({ error: 'Неверные учетные данные' });
   }
   
-  // Возвращаем пользователя без пароля в целях безопасности
+ 
   const userData = {
     id: user.id,
     name: user.name,
@@ -95,9 +95,9 @@ app.post('/api/habits', (req, res) => {
     db.habits = db.habits.filter(h => h.userId !== habits[0].userId);
   }
   
-  // Добавляем новые
+
   habits.forEach(habit => {
-    habit.userId = habits[0].userId; // Добавляем ID пользователя
+    habit.userId = habits[0].userId; 
     db.habits.push(habit);
   });
   
@@ -106,7 +106,6 @@ app.post('/api/habits', (req, res) => {
   res.json({ message: 'Привычки сохранены успешно!' });
 });
 
-// Все остальные запросы перенаправляем на index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

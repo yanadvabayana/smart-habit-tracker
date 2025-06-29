@@ -660,37 +660,8 @@
             color: white;
         }
 
-        /* Export Section */
-        .export-container {
-            margin-top: 24px;
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
-        }
 
-        .export-options {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
 
-        /* Calendar Integration */
-        .calendar-integration {
-            margin-top: 24px;
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
-        }
-
-        .calendar-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
 
         /* Responsive */
         @media (max-width: 992px) {

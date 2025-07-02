@@ -4,7 +4,7 @@ import { state } from './state.js';
 
 export function checkAchievements() {
     if (state.habits.length > 0 && !state.achievements.includes('first_habit')) {
-        App.state.achievements.push('first_habit');
+        state.achievements.push('first_habit');
         Utils.showNotification('Достижение!', 'Первая привычка добавлена', 'success');
         DataLoader.saveAchievements();
     }
@@ -27,14 +27,14 @@ export function checkAchievements() {
         }
     }
 
-    if (weekStreak >= 7 && !App.state.achievements.includes('week_streak')) {
-        App.state.achievements.push('week_streak');
+    if (weekStreak >= 7 && !state.achievements.includes('week_streak')) {
+        state.achievements.push('week_streak');
         Utils.showNotification('Достижение!', 'Неделя подряд выполнения привычек', 'success');
         DataLoader.saveAchievements();
     }
 
-    if (App.state.habits.length >= 5 && !App.state.achievements.includes('month_activity')) {
-        App.state.achievements.push('month_activity');
+    if (state.habits.length >= 5 && !state.achievements.includes('month_activity')) {
+        state.achievements.push('month_activity');
         Utils.showNotification('Достижение!', '5 активных привычек в месяц', 'success');
         DataLoader.saveAchievements();
     }

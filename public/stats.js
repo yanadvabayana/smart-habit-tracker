@@ -4,15 +4,15 @@ import { state } from './state.js';
 export function updateStats() {
     if (!state.currentUser) return;
 
-    const activeHabits = App.state.habits.filter(h => !h.archived);
+    const activeHabits = state.habits.filter(h => !h.archived);
     UI.elements.totalHabits.textContent = activeHabits.length;
 
     let totalChecks = 0;
-    App.state.habits.forEach(habit => {
+    state.habits.forEach(habit => {
         totalChecks += habit.completedDates.length;
     });
 
-    const totalPossible = App.state.habits.length * 30;
+    const totalPossible = state.habits.length * 30;
     const completionRate = totalPossible > 0
         ? Math.round((totalChecks / totalPossible) * 100)
         : 0;
@@ -20,7 +20,7 @@ export function updateStats() {
     UI.elements.completionRate.textContent = `${completionRate}%`;
 
     let longestStreak = 0;
-    App.state.habits.forEach(habit => {
+    state.habits.forEach(habit => {
         let currentStreak = 0;
         const todayDate = new Date();
 
@@ -48,7 +48,7 @@ export function updateStats() {
     UI.elements.currentStreak.textContent = longestStreak;
 
     // Еженедельный прогресс
-    const weeklyCompleted = App.state.habits.reduce((count, habit) => {
+    const weeklyCompleted = state.habits.reduce((count, habit) => {
         const today = new Date();
         for (let i = 0; i < 7; i++) {
             const date = new Date(today);

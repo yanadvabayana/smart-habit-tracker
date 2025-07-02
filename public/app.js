@@ -16,7 +16,7 @@ export const App = {
                 DataLoader.loadUserData();
                 UI.showApp();
             } catch (e) {
-                console.error("Error loading user:", e);
+                console.error("Ошибка загрузки пользователя:", e);
                 localStorage.removeItem('currentUser');
                 UI.showAuth();
             }

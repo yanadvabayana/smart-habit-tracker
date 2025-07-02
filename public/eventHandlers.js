@@ -20,7 +20,7 @@ export function setup() {
         });
     });
 
-    // Форма входа
+    
     UI.elements.loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
@@ -28,7 +28,7 @@ export function setup() {
         Auth.loginUser(email, password);
     });
 
-    // Форма регистрации
+   
     UI.elements.registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const name = document.getElementById('register-name').value;
@@ -63,7 +63,7 @@ export function setup() {
 
     UI.elements.saveHabitBtn.addEventListener('click', HabitsManager.addNewHabit);
 
-    // Фильтры
+
     UI.elements.filterOptions.forEach(option => {
         option.addEventListener('click', () => {
             UI.elements.filterOptions.forEach(opt => opt.classList.remove('active'));

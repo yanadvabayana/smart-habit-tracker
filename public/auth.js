@@ -15,7 +15,7 @@ export async function registerUser(name, email, password) {
         const data = await response.json();
 
         if (response.ok) {
-            App.state.currentUser = data.user;
+            state.currentUser = data.user;
             Utils.showNotification('Успешно', 'Аккаунт успешно создан!');
             UI.showApp();
         } else {
@@ -28,7 +28,7 @@ export async function registerUser(name, email, password) {
 
 export async function loginUser(email, password) {
     try {
-        const response = await fetch(`${App.API_URL}/login`, {
+        const response = await fetch(`${API_URL}/login`, { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -37,11 +37,11 @@ export async function loginUser(email, password) {
         const data = await response.json();
         
         if (response.ok) {
-            App.state.currentUser = data.user;
-            localStorage.setItem('currentUser', JSON.stringify(App.state.currentUser));
+            state.currentUser = data.user;
+            localStorage.setItem('currentUser', JSON.stringify(state.currentUser));
             await DataLoader.loadUserData();
             UI.showApp();
-            Utils.showNotification('Добро пожаловать!', `Рады снова видеть вас, ${App.state.currentUser.name}`);
+            Utils.showNotification('Добро пожаловать!', `Рады снова видеть вас, ${state.currentUser.name}`);
         } else {
             Utils.showNotification('Ошибка', data.error || 'Неверный email или пароль', 'error');
         }
@@ -52,7 +52,7 @@ export async function loginUser(email, password) {
 
 export function logoutUser() {
     localStorage.removeItem('currentUser');
-    App.state.currentUser = null;
-    App.state.habits = [];
+    state.currentUser = null;
+    state.habits = [];
     UI.showAuth();
 }

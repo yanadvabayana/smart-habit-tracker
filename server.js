@@ -11,7 +11,7 @@ const DATA_FILE = path.join(__dirname, 'db.json');
 app.use(cors());
 app.use(bodyParser.json());
 
-// Обслуживание статических файлов из папки public
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 

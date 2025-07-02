@@ -90,20 +90,20 @@ export function renderHabits() {
         return;
     }
 
-    let filteredHabits = App.state.habits;
+    let filteredHabits = state.habits;
     switch (state.activeSection) {
         case 'active':
-            filteredHabits = App.state.habits.filter(h => h.active && !h.archived);
+            filteredHabits = state.habits.filter(h => h.active && !h.archived);
             break;
         case 'completed':
             const today = new Date().toISOString().split('T')[0];
-            filteredHabits = App.state.habits.filter(h => h.completedDates.includes(today));
+            filteredHabits = state.habits.filter(h => h.completedDates.includes(today));
             break;
         case 'archive':
-            filteredHabits = App.state.habits.filter(h => h.archived);
+            filteredHabits = state.habits.filter(h => h.archived);
             break;
         default:
-            filteredHabits = App.state.habits.filter(h => !h.archived);
+            filteredHabits = state.habits.filter(h => !h.archived);
     }
 
     if (filteredHabits.length === 0) {

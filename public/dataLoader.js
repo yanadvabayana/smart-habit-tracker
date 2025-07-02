@@ -15,8 +15,8 @@ export async function loadUserHabits() {
     if (!state.currentUser) return;
     
     try {
-        const response = await fetch(`${App.API_URL}/habits/${state.currentUser.id}`);
-        App.state.habits = await response.json();
+        const response = await fetch(`${API_URL}/habits/${state.currentUser.id}`);
+        state.habits = await response.json();
         UI.renderHabits();
         Stats.updateStats();
         UI.renderProgressChart();
@@ -26,7 +26,7 @@ export async function loadUserHabits() {
 }
 
 export function loadAchievements() {
-    if (!App.state.currentUser) return;
+    if (!state.currentUser) return;
     const userAchievements = localStorage.getItem(`achievements_${state.currentUser.id}`);
     state.achievements = userAchievements ? JSON.parse(userAchievements) : [];
     UI.renderAchievements();
@@ -35,11 +35,11 @@ export function loadAchievements() {
 export function loadReminders() {
     if (!state.currentUser) return;
     const userReminders = localStorage.getItem(`reminders_${state.currentUser.id}`);
-    App.state.reminders = userReminders ? JSON.parse(userReminders) : [];
+    state.reminders = userReminders ? JSON.parse(userReminders) : [];
 }
 
 export async function saveUserHabits() {
-    if (!App.state.currentUser) return;
+    if (!state.currentUser) return;
     
     try {
         const habitsWithUserId = state.habits.map(habit => ({
@@ -47,7 +47,7 @@ export async function saveUserHabits() {
             userId: state.currentUser.id
         }));
 
-        await fetch(`${App.API_URL}/habits`, {
+        await fetch(`${API_URL}/habits`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(habitsWithUserId)

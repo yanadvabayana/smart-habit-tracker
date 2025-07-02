@@ -22,7 +22,7 @@ export function addNewHabit() {
         archived: false,
         createdAt: new Date().toISOString()
     };
-
+    console.log("Отработано")
     state.habits.push(newHabit);
     DataLoader.saveUserHabits();
 
@@ -48,7 +48,7 @@ export function addNewHabit() {
 
 export function deleteHabit(id) {
     if (confirm('Удалить эту привычку?')) {
-        App.state.habits = App.state.habits.filter(habit => habit.id !== id);
+        state.habits = state.habits.filter(habit => habit.id !== id);
         DataLoader.saveUserHabits();
         UI.renderHabits();
         Utils.showNotification('Привычка удалена', 'Привычка была успешно удалена');

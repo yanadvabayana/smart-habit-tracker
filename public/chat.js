@@ -1,4 +1,3 @@
-import * as Utils from './utils.js';
 import * as UI from './ui.js';
 import { state } from './state.js';
 
@@ -120,7 +119,7 @@ function getMotivation() {
 }
 
 function getProgressSummary() {
-    if (App.state.habits.length === 0) {
+    if (state.habits.length === 0) {
         return "У тебя пока нет активных привычек. Давай добавим первую?";
     }
 

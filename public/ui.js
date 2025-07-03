@@ -3,6 +3,7 @@ import * as DataLoader from './dataLoader.js';
 import * as Stats from './stats.js';
 import * as Utils from './utils.js';
 import { state } from './state.js';
+import { updateProfileName, updateProfileAvatar } from './profile.js';
 
 export const elements = {
     authScreen: document.getElementById('auth-screen'),
@@ -34,7 +35,15 @@ export const elements = {
     weeklyBar: document.getElementById('weekly-bar'),
     currentStreak: document.getElementById('current-streak'),
     achievementsContainer: document.getElementById('achievements-container'),
-    progressChart: document.getElementById('progress-chart')
+    progressChart: document.getElementById('progress-chart'),
+    profileEditBtn: document.getElementById('profile-edit-btn'),
+    profileModal: document.getElementById('profile-modal'),
+    profileCloseBtn: document.getElementById('profile-close-btn'),
+    profileSaveBtn: document.getElementById('profile-save-btn'),
+    profileNameInput: document.getElementById('profile-name-input'),
+     profileAvatarInput: document.getElementById('profile-avatar-input'),
+    profileAvatarPreview: document.getElementById('profile-avatar-preview'),
+    profileAvatarUploadBtn: document.getElementById('profile-avatar-upload-btn'),
 };
 
 export function showAuth() {
@@ -61,7 +70,15 @@ export function showApp() {
     elements.appContainer.style.display = 'block';
 
     elements.userName.textContent = state.currentUser.name;
-    elements.userAvatar.textContent = state.currentUser.name.charAt(0).toUpperCase();
+    
+    // Обновляем аватар
+    if (state.currentUser.avatar) {
+        elements.userAvatar.style.backgroundImage = `url(${state.currentUser.avatar})`;
+        elements.userAvatar.textContent = '';
+    } else {
+        elements.userAvatar.style.backgroundImage = '';
+        elements.userAvatar.textContent = state.currentUser.name.charAt(0).toUpperCase();
+    }
 
     elements.habitsSection.style.display = 'block';
     elements.addHabitForm.style.display = 'none';
@@ -111,9 +128,9 @@ export function renderHabits() {
             <div class="empty-state">
                 <i class="fas fa-clipboard-list"></i>
                 <h3>Нет привычек в этом разделе</h3>
-                <p>${state.activeSection === 'archive' ? 
-                    'У вас нет привычек в архиве' : 
-                    'У вас нет активных привычек в этом разделе'}</p>
+                <p>${state.activeSection === 'archive' ?
+                'У вас нет привычек в архиве' :
+                'У вас нет активных привычек в этом разделе'}</p>
             </div>
         `;
         return;
@@ -329,5 +346,88 @@ export function renderProgressChart() {
         bar.style.height = `${barHeight}px`;
         bar.innerHTML = `<div class="chart-bar-label">${labels[index]}</div>`;
         elements.progressChart.appendChild(bar);
+    });
+}
+
+export function showProfileModal() {
+    if (!state.currentUser) return;
+    
+    elements.profileNameInput.value = state.currentUser.name;
+    elements.profileAvatarPreview.src = state.currentUser.avatar || 
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(state.currentUser.name)}&background=random`;
+    elements.profileModal.style.display = 'block';
+}
+
+// Обновим setupProfileHandlers
+export function setupProfileHandlers() {
+    elements.profileEditBtn?.addEventListener('click', showProfileModal);
+    elements.profileCloseBtn?.addEventListener('click', () => {
+        elements.profileModal.style.display = 'none';
+    });
+    
+    elements.profileSaveBtn?.addEventListener('click', async () => {
+        const newName = elements.profileNameInput.value.trim();
+        let changesMade = false;
+        
+        try {
+            // Обновляем имя, если оно изменилось
+            if (newName && newName !== state.currentUser.name) {
+                const nameSuccess = await updateProfileName(newName);
+                if (nameSuccess) {
+                    elements.userName.textContent = newName;
+                    elements.userAvatar.textContent = newName.charAt(0).toUpperCase();
+                    changesMade = true;
+                }
+            }
+            
+            // Обновляем аватар, если был выбран новый файл
+            if (elements.profileAvatarInput.files.length > 0) {
+                const file = elements.profileAvatarInput.files[0];
+                const avatarSuccess = await updateProfileAvatar(file);
+                if (avatarSuccess) {
+                    // Используем уже сжатое изображение из state
+                    elements.profileAvatarPreview.src = state.currentUser.avatar;
+                    elements.userAvatar.style.backgroundImage = `url(${state.currentUser.avatar})`;
+                    elements.userAvatar.textContent = '';
+                    changesMade = true;
+                }
+            }
+            
+            if (changesMade) {
+                elements.profileModal.style.display = 'none';
+                Utils.showNotification('Успешно', 'Изменения сохранены');
+            } else {
+                Utils.showNotification('Информация', 'Нет изменений для сохранения', 'info');
+            }
+        } catch (error) {
+            console.error('Ошибка при сохранении профиля:', error);
+        }
+        
+        if (changesMade) {
+            elements.profileModal.style.display = 'none';
+        } else {
+            Utils.showNotification('Информация', 'Нет изменений для сохранения', 'info');
+        }
+    });
+
+    elements.profileAvatarUploadBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        elements.profileAvatarInput.click();
+    });
+
+    elements.profileAvatarInput?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (!file.type.match('image.*')) {
+                Utils.showNotification('Ошибка', 'Пожалуйста, выберите изображение', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                elements.profileAvatarPreview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
     });
 }

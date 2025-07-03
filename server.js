@@ -8,6 +8,8 @@ const app = express();
 const PORT = 3001;
 const DATA_FILE = path.join(__dirname, 'db.json');
 
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -110,8 +112,82 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+
+
 // Запуск сервера
 app.listen(PORT, () => {
   initDB();
   console.log(`Сервер запущен на http://localhost:${PORT}`);
 });
+
+
+app.put('/api/users/:userId', (req, res) => {
+  const { userId } = req.params;
+  const { name } = req.body;
+  
+
+  const db = JSON.parse(fs.readFileSync(DATA_FILE));
+  
+
+  const userIndex = db.users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) {
+    return res.status(404).json({ error: 'Пользователь не найден' });
+  }
+  
+
+  db.users[userIndex].name = name;
+  
+
+  fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
+  
+
+  res.json({ 
+    message: 'Имя успешно обновлено',
+    user: {
+      id: db.users[userIndex].id,
+      name: db.users[userIndex].name,
+      email: db.users[userIndex].email,
+      joinDate: db.users[userIndex].joinDate
+    }
+  });
+});
+
+app.put('/api/users/:userId/avatar', (req, res) => {
+  const { userId } = req.params;
+  const { avatar } = req.body;
+  
+  if (!avatar || !avatar.startsWith('data:image')) {
+      return res.status(400).json({ error: 'Некорректные данные аватара' });
+  }
+
+  const db = JSON.parse(fs.readFileSync(DATA_FILE));
+  const userIndex = db.users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+  }
+  
+  // Обрезаем base64 строку если она слишком длинная (для безопасности)
+  const cleanAvatar = avatar.length > 2 * 1024 * 1024 
+      ? avatar.substring(0, 2 * 1024 * 1024)
+      : avatar;
+  
+  db.users[userIndex].avatar = cleanAvatar;
+  fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
+  
+  res.json({ 
+      message: 'Аватар успешно обновлен',
+      user: {
+          id: db.users[userIndex].id,
+          name: db.users[userIndex].name,
+          email: db.users[userIndex].email,
+          avatar: db.users[userIndex].avatar,
+          joinDate: db.users[userIndex].joinDate
+      }
+  });
+});
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+

@@ -47,7 +47,7 @@ export function updateStats() {
     UI.elements.streakCount.textContent = longestStreak;
     UI.elements.currentStreak.textContent = longestStreak;
 
-    // Еженедельный прогресс
+
     const weeklyCompleted = state.habits.reduce((count, habit) => {
         const today = new Date();
         for (let i = 0; i < 7; i++) {

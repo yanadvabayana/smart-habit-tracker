@@ -358,7 +358,7 @@ export function showProfileModal() {
     elements.profileModal.style.display = 'block';
 }
 
-// Обновим setupProfileHandlers
+
 export function setupProfileHandlers() {
     elements.profileEditBtn?.addEventListener('click', showProfileModal);
     elements.profileCloseBtn?.addEventListener('click', () => {
@@ -370,7 +370,6 @@ export function setupProfileHandlers() {
         let changesMade = false;
         
         try {
-            // Обновляем имя, если оно изменилось
             if (newName && newName !== state.currentUser.name) {
                 const nameSuccess = await updateProfileName(newName);
                 if (nameSuccess) {
@@ -380,12 +379,10 @@ export function setupProfileHandlers() {
                 }
             }
             
-            // Обновляем аватар, если был выбран новый файл
             if (elements.profileAvatarInput.files.length > 0) {
                 const file = elements.profileAvatarInput.files[0];
                 const avatarSuccess = await updateProfileAvatar(file);
                 if (avatarSuccess) {
-                    // Используем уже сжатое изображение из state
                     elements.profileAvatarPreview.src = state.currentUser.avatar;
                     elements.userAvatar.style.backgroundImage = `url(${state.currentUser.avatar})`;
                     elements.userAvatar.textContent = '';

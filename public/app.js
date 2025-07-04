@@ -6,7 +6,7 @@ import { state } from './state.js';
 import { API_URL } from './config.js';
 import * as Profile from './profile.js';
 
-// Управление темой
+
 function setupTheme() {
     const themeToggle = document.getElementById('theme-toggle');
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
@@ -26,8 +26,6 @@ function setupTheme() {
         }
         localStorage.setItem('theme', 'light');
     }
-
-    // Проверка сохраненной темы или системных настроек
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
         applyDarkTheme();
@@ -46,7 +44,6 @@ function setupTheme() {
         });
     }
 
-    // Отслеживание изменений системной темы
     prefersDarkScheme.addEventListener('change', (e) => {
         if (!localStorage.getItem('theme')) {
             if (e.matches) {
@@ -77,7 +74,7 @@ export const App = {
             UI.showAuth();
         }
 
-        setupTheme(); // Добавляем вызов функции настройки темы
+        setupTheme(); 
         EventHandlers.setup();
         UI.setupProfileHandlers();
         Chat.init();
